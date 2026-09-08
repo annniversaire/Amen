@@ -1032,16 +1032,7 @@ closePopup.addEventListener(
   "click",
   function () {
 
-
-    responsePopup.style.display =
-      "none";
-
-
-    /*
-       Après fermeture :
-       uniquement le message
-       Joyeux anniversaire.
-    */
+    responsePopup.style.display = "none";
 
     invitationPage.innerHTML = `
 
@@ -1050,8 +1041,19 @@ closePopup.addEventListener(
         <div class="card">
 
           <h1>
-            Joyeux anniversaire Amen ️🎂🎉             Je t'❤️ RABAK
+            Joyeux anniversaire Amen ❤️🎂🎉
           </h1>
+
+          <p class="message">
+            Je t'❤️ RABAK
+          </p>
+
+          <img
+            src="amen.jpg"
+            alt="Joyeux anniversaire Amen"
+            class="birthday-image"
+          >
+
         </div>
 
       </div>
