@@ -102,7 +102,23 @@ body {
   font-size: 40px;
   color: #786f63;
 }
+.letter::after {
+  content: "";
 
+  position: absolute;
+  left: calc(50% + clamp(30px, 8vw, 45px));
+  top: 48%;
+
+  width: clamp(30px, 9vw, 50px);
+  height: clamp(30px, 9vw, 50px);
+
+  transform: translateY(-50%);
+
+  background-image: url("systeme.jpg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
 /* Rabat supérieur */
 .flap {
   position: absolute;
