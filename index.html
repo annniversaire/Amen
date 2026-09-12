@@ -93,7 +93,7 @@ body {
 }
 
 .letter::before {
-  content: "🎉🎉";
+  content: "🎉";
   position: absolute;
   left: 50%;
   top: 48%;
@@ -800,6 +800,20 @@ button {
 
 .choice.is-hidden {
   display: none;
+}
+
+
+/* Hover du dernier bouton de la popup */
+#donateOnlyPopup button:hover {
+  transform: translateY(-2px) scale(1.02);
+  background: #000;
+  color: #fff;
+  filter: none;
+  box-shadow: 0 8px 20px rgba(0,0,0,.28);
+}
+
+#donateOnlyPopup button {
+  transition: transform .2s ease, filter .2s ease, box-shadow .2s ease;
 }
 
 </style>
@@ -1522,9 +1536,24 @@ closePopup.addEventListener(
                 id="donateLink"
                 class="donate-link"
                 aria-label="PayPal Donate"
+                onclick="event.preventDefault(); document.getElementById('donateOnlyPopup').style.display='flex';"
               >
                 <span class="paypal-mark">PayPal Donate</span>
               </button>
+            </div>
+
+            <div
+              id="donateOnlyPopup"
+              style="display:none; position:fixed; inset:0; z-index:99999; align-items:center; justify-content:center; padding:20px; background:rgba(0,0,0,.65); backdrop-filter:blur(4px);"
+            >
+              <div style="width:min(460px,100%); box-sizing:border-box; background:#fff; border-radius:24px; padding:30px 26px; text-align:center; box-shadow:0 25px 80px rgba(0,0,0,.35);">
+                <div style="font-size:48px; margin-bottom:12px;">💸</div>
+                <h2 style="margin:0 0 14px;">Donate راك منيتك آمان ؟ 😭</h2> 
+                <p style="margin:0 0 24px; line-height:1.6;">Merci pour ta générosité ! Mais la fondation accepte uniquement les dons en nature 🥩</p>
+                <button type="button" onclick="document.getElementById('donateOnlyPopup').style.display='none';" style="border:0; border-radius:14px; padding:13px 20px; cursor:pointer; font-weight:700; font-size:15px;">
+                  إيا ها  روح صاحبي ، روح ، انطلق
+                </button>
+              </div>
             </div>
 
           </div>
@@ -1540,57 +1569,6 @@ closePopup.addEventListener(
 
 
 
-
-/* =========================
-   PAYPAL DONATE -> POPUP
-========================= */
-document.addEventListener("click", function (event) {
-  const donateButton = event.target.closest("#donateLink");
-  if (!donateButton) return;
-
-  event.preventDefault();
-  event.stopPropagation();
-
-  const popup = document.getElementById("responsePopup");
-  const popupBox = popup && popup.querySelector(".popup");
-
-  if (!popup || !popupBox) return;
-
-  // Sauvegarde du contenu normal du popup une seule fois.
-  if (!popupBox.dataset.normalSaved) {
-    const icon = popupBox.querySelector(".popup-icon");
-    const text = popupBox.querySelector("p");
-    const button = popupBox.querySelector("#closePopup");
-
-    popupBox.dataset.normalIcon = icon ? icon.textContent : "";
-    popupBox.dataset.normalText = text ? text.textContent : "";
-    popupBox.dataset.normalButton = button ? button.textContent : "";
-    popupBox.dataset.normalSaved = "1";
-  }
-
-  let title = popupBox.querySelector("#donatePopupTitle");
-  if (!title) {
-    title = document.createElement("h2");
-    title.id = "donatePopupTitle";
-    popupBox.insertBefore(title, popupBox.querySelector("p"));
-  }
-
-  const icon = popupBox.querySelector(".popup-icon");
-  const text = popupBox.querySelector("p");
-  const button = popupBox.querySelector("#closePopup");
-
-  if (icon) icon.textContent = "💸";
-  title.textContent = "Donate راك منيتك آمان ؟ 😭";
-  if (text) {
-    text.textContent =
-      "Merci pour ta générosité ! Mais la fondation accepte uniquement les dons en nature 🥩";
-  }
-  if (button) {
-    button.textContent = "إيا ها  روح صاحبي ، روح ، انطلق";
-  }
-
-  popup.style.display = "flex";
-});
 
 </script>
 
