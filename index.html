@@ -660,6 +660,11 @@ button {
 
 <body>
 
+<audio id="birthdayMusic" preload="auto">
+  <source src="musique.mp3" type="audio/mpeg">
+</audio>
+
+
 
 <!-- =========================
      ÉCRAN ENVELOPPE
@@ -835,6 +840,9 @@ const envelopeScreen =
 const invitationPage =
   document.getElementById("invitationPage");
 
+const birthdayMusic =
+  document.getElementById("birthdayMusic");
+
 
 /*
    IMPORTANT :
@@ -860,6 +868,10 @@ const tooLate =
 envelope.addEventListener(
   "click",
   function () {
+
+    // Lance la musique au clic : le navigateur autorise
+    // la lecture audio car elle est déclenchée par une action utilisateur.
+    birthdayMusic.play().catch(() => {});
 
 
     /*
