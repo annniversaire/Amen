@@ -778,6 +778,30 @@ button {
 .no-choice {
   border-left: 4px solid #8B3A3A;
 }
+
+/* États des choix après sélection */
+.choice {
+  transition: opacity .35s ease, filter .35s ease, transform .35s ease,
+              background .35s ease, box-shadow .35s ease;
+}
+
+.choice.is-disabled {
+  opacity: .38;
+  filter: grayscale(1);
+}
+
+.choice.is-highlighted {
+  opacity: 1;
+  filter: none;
+  background: #fff3a8;
+  box-shadow: 0 0 0 3px rgba(255,196,57,.35), 0 8px 22px rgba(60,45,25,.12);
+  transform: scale(1.02);
+}
+
+.choice.is-hidden {
+  display: none;
+}
+
 </style>
 
 </head>
@@ -888,9 +912,9 @@ style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index
   <div class="choice no-choice">
     <span class="choice-icon">😈</span>
     <div>
-      <b>Mais si tu cliques sur Non</b>
       <p>
-        <u>Tu m’offres un cadeau !</u> 🎁
+         <u>Tu m’offres un cadeau !</u> 🎁
+        <span>Tu n'as plus le choix que de cliquer sur Non.</span>
       </p>
     </div>
   </div>
@@ -1361,6 +1385,17 @@ if (attempts >= 5) {
 
   // Faire disparaître le bouton Oui
   noButton.style.display = "none";
+
+  const yesChoiceBlock = document.querySelector(".yes-choice");
+  const noChoiceBlock = document.querySelector(".no-choice");
+
+  if (yesChoiceBlock) {
+    yesChoiceBlock.classList.add("is-hidden", "is-disabled");
+  }
+
+  if (noChoiceBlock) {
+    noChoiceBlock.classList.add("is-highlighted");
+  }
 
   // Garder le bouton Non visible
   yesButton.style.display = "inline-block";
