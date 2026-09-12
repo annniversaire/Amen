@@ -653,6 +653,80 @@ button {
   object-fit: contain;
 }
 
+
+/* =========================
+   BOUTONS FINAUX
+========================= */
+.final-controls {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:18px;
+  margin-top:28px;
+}
+
+.replay-area {
+  display:inline-flex;
+  flex-direction:column;
+  align-items:center;
+  gap:7px;
+  color:#786f63;
+  font-size:14px;
+  text-decoration:none;
+  cursor:pointer;
+  animation:hintPulse 2s infinite;
+}
+
+.replay-button {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:#27231e;
+  color:#fff;
+  font-size:25px;
+  line-height:1;
+  box-shadow:0 6px 16px rgba(39,35,30,.18);
+}
+
+.replay-area:hover .replay-button {
+  transform:scale(1.08);
+}
+
+.replay-area:hover {
+  color:#27231e;
+}
+
+/* BOUTON PAYPAL DONATE */
+.donate-link {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:42px;
+  padding:10px 20px;
+  border:0;
+  border-radius:10px;
+  background:#ffc439;
+  color:#003087;
+  font-family:inherit;
+  font-size:15px;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 5px 14px rgba(0,0,0,.12);
+}
+
+.donate-link:hover {
+  transform:translateY(-1px);
+  box-shadow:0 7px 18px rgba(0,0,0,.16);
+}
+
+.paypal-mark {
+  color:#003087;
+  font-weight:bold;
+}
+
 </style>
 
 </head>
@@ -1329,6 +1403,33 @@ closePopup.addEventListener(
             class="birthday-image"
           >
 
+          <div class="final-controls">
+
+            <a
+              class="replay-area"
+              href="https://annniversaire.github.io/QuizA/"
+              aria-label="Rejouer l'animation complète"
+              title="Rejouer l'animation complète"
+            >
+              <span>Rejouer</span>
+              <span class="replay-button" aria-hidden="true">↻</span>
+            </a>
+
+            <div class="click-hint">
+              Soutenez la fondation BELGROUM qui oeuvre au bien-être de la famille BELGROUM 💙
+              <br><br>
+              <button
+                type="button"
+                id="donateLink"
+                class="donate-link"
+                aria-label="PayPal Donate"
+              >
+                <span class="paypal-mark">PayPal Donate</span>
+              </button>
+            </div>
+
+          </div>
+
         </div>
 
       </div>
@@ -1338,6 +1439,59 @@ closePopup.addEventListener(
   }
 );
 
+
+
+
+/* =========================
+   PAYPAL DONATE -> POPUP
+========================= */
+document.addEventListener("click", function (event) {
+  const donateButton = event.target.closest("#donateLink");
+  if (!donateButton) return;
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  const popup = document.getElementById("responsePopup");
+  const popupBox = popup && popup.querySelector(".popup");
+
+  if (!popup || !popupBox) return;
+
+  // Sauvegarde du contenu normal du popup une seule fois.
+  if (!popupBox.dataset.normalSaved) {
+    const icon = popupBox.querySelector(".popup-icon");
+    const text = popupBox.querySelector("p");
+    const button = popupBox.querySelector("#closePopup");
+
+    popupBox.dataset.normalIcon = icon ? icon.textContent : "";
+    popupBox.dataset.normalText = text ? text.textContent : "";
+    popupBox.dataset.normalButton = button ? button.textContent : "";
+    popupBox.dataset.normalSaved = "1";
+  }
+
+  let title = popupBox.querySelector("#donatePopupTitle");
+  if (!title) {
+    title = document.createElement("h2");
+    title.id = "donatePopupTitle";
+    popupBox.insertBefore(title, popupBox.querySelector("p"));
+  }
+
+  const icon = popupBox.querySelector(".popup-icon");
+  const text = popupBox.querySelector("p");
+  const button = popupBox.querySelector("#closePopup");
+
+  if (icon) icon.textContent = "💸";
+  title.textContent = "Donate راك منيتك آمان ؟ 😭";
+  if (text) {
+    text.textContent =
+      "Merci pour ta générosité ! Mais la fondation accepte uniquement les dons en gâteaux 🎂";
+  }
+  if (button) {
+    button.textContent = "إيا ها  روح صاحبي ، روح ، انطلق";
+  }
+
+  popup.style.display = "flex";
+});
 
 </script>
 
