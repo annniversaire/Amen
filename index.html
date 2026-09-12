@@ -816,6 +816,40 @@ button {
   transition: transform .2s ease, filter .2s ease, box-shadow .2s ease;
 }
 
+
+/* Contraste inverse sur tous les boutons, sauf le bouton Oui qui fuit */
+button:not(#no) {
+  transition: background .2s ease, color .2s ease, transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+button:not(#no):hover {
+  background: #fff !important;
+  color: #27231e !important;
+  border: 2px solid #27231e !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.18);
+}
+
+/* Le bouton PayPal conserve le contraste inverse même avec son style jaune */
+.donate-link:hover {
+  background: #fff !important;
+  color: #27231e !important;
+  border: 2px solid #27231e !important;
+}
+
+.donate-link:hover .paypal-mark {
+  color: #27231e !important;
+}
+
+/* Bouton Fermer du popup final */
+#donateOnlyPopup button:hover {
+  background: #fff !important;
+  color: #27231e !important;
+  border: 2px solid #27231e !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.18);
+}
+
 </style>
 
 </head>
