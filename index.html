@@ -59,23 +59,29 @@ body {
   line-height: 1.5;
 }
 
-#accessCode {
-  display: block;
-  width: 100%;
-  height: 62px;
+#codeInputs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 auto;
+}
+
+.code-digit {
+  width: 64px;
+  height: 68px;
   border: 2px solid #d8c8ae;
   border-radius: 14px;
   outline: none;
   background: #fff;
   color: #27231e;
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 700;
   text-align: center;
-  letter-spacing: 8px;
-  padding: 8px 16px;
+  padding: 8px;
+  box-sizing: border-box;
 }
 
-#accessCode:focus {
+.code-digit:focus {
   border-color: #8b3a3a;
   box-shadow: 0 0 0 4px rgba(139,58,58,.12);
 }
@@ -1016,17 +1022,11 @@ style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index
     <p>Entre le code à trois chiffres pour continuer.</p>
 
     <form id="codeForm">
-      <input
-        id="accessCode"
-        type="text"
-        inputmode="numeric"
-        autocomplete="off"
-        maxlength="3"
-        pattern="[0-9]{3}"
-        placeholder="•••"
-        aria-label="Code à trois chiffres"
-        required
-      >
+      <div id="codeInputs" aria-label="Code à trois chiffres">
+        <input class="code-digit" type="text" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="Premier chiffre">
+        <input class="code-digit" type="text" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="Deuxième chiffre">
+        <input class="code-digit" type="text" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="Troisième chiffre">
+      </div>
 
       <div class="code-actions">
         <button type="submit" id="validateCode">
@@ -1253,8 +1253,8 @@ const codeGate =
 const codeForm =
   document.getElementById("codeForm");
 
-const accessCode =
-  document.getElementById("accessCode");
+const codeDigits =
+  Array.from(document.querySelectorAll(".code-digit"));
 
 const validateCode =
   document.getElementById("validateCode");
@@ -1281,14 +1281,52 @@ async function sha256HexCode(value) {
     .join("");
 }
 
-accessCode.addEventListener("input", function () {
-  this.value = this.value.replace(/\D/g, "").slice(0, 3);
+codeDigits.forEach((input, index) => {
+  input.addEventListener("input", function () {
+    const digits = this.value.replace(/\D/g, "");
+
+    // Si plusieurs chiffres sont injectés (collage/autofill),
+    // on les répartit automatiquement dans les 3 cases.
+    if (digits.length > 1) {
+      digits.slice(0, 3).split("").forEach((digit, i) => {
+        if (codeDigits[i]) codeDigits[i].value = digit;
+      });
+      codeDigits[Math.min(digits.length, 3) - 1].focus();
+      return;
+    }
+
+    this.value = digits.slice(0, 1);
+    if (this.value && index < codeDigits.length - 1) {
+      codeDigits[index + 1].focus();
+    }
+  });
+
+  input.addEventListener("keydown", function (event) {
+    if (event.key === "Backspace" && !this.value && index > 0) {
+      codeDigits[index - 1].focus();
+    }
+  });
+
+  input.addEventListener("paste", function (event) {
+    event.preventDefault();
+    const pasted = (event.clipboardData || window.clipboardData)
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 3);
+
+    pasted.split("").forEach((digit, i) => {
+      if (codeDigits[index + i]) codeDigits[index + i].value = digit;
+    });
+
+    const nextIndex = Math.min(index + pasted.length, codeDigits.length - 1);
+    codeDigits[nextIndex].focus();
+  });
 });
 
 codeForm.addEventListener("submit", async function (event) {
   event.preventDefault();
 
-  const value = accessCode.value.trim();
+  const value = codeDigits.map(input => input.value).join("");
 
   if (!/^\d{3}$/.test(value)) {
     codeResult.textContent =
@@ -1327,8 +1365,8 @@ codeForm.addEventListener("submit", async function (event) {
     retryCode.style.display = "inline-flex";
     validateCode.disabled = false;
 
-    accessCode.value = "";
-    accessCode.focus();
+    codeDigits.forEach(input => input.value = "");
+    codeDigits[0].focus();
   }
 });
 
@@ -1341,7 +1379,7 @@ retryCode.addEventListener("click", function () {
 
   retryCode.style.display = "none";
   validateCode.disabled = true;
-  accessCode.disabled = true;
+  codeDigits.forEach(input => input.disabled = true);
 
   setTimeout(() => {
     window.location.href =
